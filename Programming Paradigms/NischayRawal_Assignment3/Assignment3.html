@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Class Assignment</title>
+</head>
+<body>
+    <h1>Group Class Implementation</h1>
+    <div id="output"></div>
+
+    <script>
+        // =========================================================================
+        // EECS 468 Assignment 3
+        // Programming Paradigms
+        // 
+        // This program implements a custom Group class that simulates JavaScript Set operations:
+        // 1. Group data structure with array-based storage
+        // 2. Core methods: add, delete, has for basic set operations
+        // 3. Set theory methods: union, intersection, difference
+        //
+        // Inputs: None (test cases are hardcoded based on assignment requirements)
+        // Outputs: Display of all Group operations and their results in HTML paragraphs
+        //
+        // Author: Nischay Rawal
+        // Creation Date: 09-05-2025
+        // Last Modified: 09-09-2025
+        // Assistance: None
+        // Collaborators: None
+        // =========================================================================
+        // Define the Group class
+        class Group {
+            // Constructor creates an empty group using an array to store values
+            constructor() {
+                this.values = []; // This is the array to hold the group's values
+            }
+
+            // Add method - This adds a value to the group only if it's not already present
+            add(value) {
+                // This checks if the value is not already in the group
+                if (!this.has(value)) {
+                    this.values.push(value); // This adds the value to the array
+                }
+            }
+
+            // Delete method - This method removes a value from the group if it exists
+            delete(value) {
+                // Find the index of the value in the array
+                const index = this.values.indexOf(value);
+                // If the value exists (index is not -1), remove it
+                if (index !== -1) {
+                    this.values.splice(index, 1); // Remove one element at the index
+                }
+            }
+
+            // Has method - This method returns true if the value is in the group, false otherwise
+            has(value) {
+                // Use indexOf to check if value exists in the array
+                return this.values.indexOf(value) !== -1;
+            }
+
+            // Union method - This method returns a new group containing all values from both groups
+            union(otherGroup) {
+                // Create a new group to hold the union result
+                const result = new Group();
+                
+                // Add all values from the current group to the result
+                for (let i = 0; i < this.values.length; i++) {
+                    result.add(this.values[i]);
+                }
+                
+                // Add all values from the other group to the result
+                for (let i = 0; i < otherGroup.values.length; i++) {
+                    result.add(otherGroup.values[i]); // add() will prevent duplicates
+                }
+                
+                return result; // This returns the new group containing the union
+            }
+
+            // Intersection method - This method returns a new group containing only values present in both groups
+            intersection(otherGroup) {
+                // Create a new group to hold the intersection result
+                const result = new Group();
+                
+                // Check each value in the current group
+                for (let i = 0; i < this.values.length; i++) {
+                    // If the value also exists in the other group, add it to the result
+                    if (otherGroup.has(this.values[i])) {
+                        result.add(this.values[i]);
+                    }
+                }
+                
+                return result; // Return the new group containing the intersection
+            }
+
+            // Intersect alias method - This method calls intersection to cover both names
+            intersect(otherGroup) {
+                return this.intersection(otherGroup);
+            }
+
+            // Difference method - This method returns a new group containing values in this group but not in the other
+            difference(otherGroup) {
+                // Create a new group to hold the difference result
+                const result = new Group();
+                
+                // Check each value in the current group
+                for (let i = 0; i < this.values.length; i++) {
+                    // If the value does not exist in the other group, add it to the result
+                    if (!otherGroup.has(this.values[i])) {
+                        result.add(this.values[i]);
+                    }
+                }
+                
+                return result; // Return the new group containing the difference
+            }
+
+            // Helper method to display the group contents as a string
+            toString() {
+                // Convert the values array to a string representation
+                return '[' + this.values.join(', ') + ']';
+            }
+        }
+
+        // This line creates two groups as specified in the assignment
+        let group1 = new Group(); // This line creates first empty group
+        let group2 = new Group(); // This line creates second empty group
+
+        // This section adds values to group1
+        group1.add(1); // This line adds 1 to group1
+        group1.add(2); // This line adds 2 to group1
+        group1.add(3); // This line adds 3 to group1
+
+        // This section adds values to group2
+        group2.add(2); // This line adds 2 to group2
+        group2.add(3); // This line adds 3 to group2
+        group2.add(5); // This line adds 5 to group2
+        group2.add(2); // This line tries to add 2 again (should have no effect due to set property)
+
+        // This line gets the output div element to display results
+        const outputDiv = document.getElementById('output');
+
+        // This function adds a paragraph with label and content to the output
+        function addParagraph(label, content) {
+            const p = document.createElement('p'); // This line creates a new paragraph element
+            p.textContent = label + ': ' + content; // This line sets the text content
+            outputDiv.appendChild(p); // This line adds the paragraph to the output div
+        }
+
+        // This section displays the results as specified in the assignment
+
+        // This line displays the contents of group1
+        addParagraph('Contents of group1', group1.toString());
+
+        // This line displays the contents of group2
+        addParagraph('Contents of group2', group2.toString());
+
+        // This line displays the results of group1.has(5)
+        addParagraph('Results of group1.has(5)', group1.has(5));
+
+        // This line displays the results of group2.has(3)
+        addParagraph('Results of group2.has(3)', group2.has(3));
+
+        // This line displays the results of group1.union(group2)
+        addParagraph('Results of group1.union(group2)', group1.union(group2).toString());
+
+        // This line displays the results of group1.intersection(group2)
+        addParagraph('Results of group1.intersection(group2)', group1.intersection(group2).toString());
+
+        // This line displays the results of group1.difference(group2)
+        addParagraph('Results of group1.difference(group2)', group1.difference(group2).toString());
+
+        // This section performs delete operations and displays results
+        group1.delete(1); // This line deletes 1 from group1
+        addParagraph('Results of group1.delete(1)', group1.toString());
+
+        // This line tries to delete 1 from group2 (1 is not in group2)
+        group2.delete(1); // This line tries to delete 1 from group2
+        addParagraph('Results of group2.delete(1)', group2.toString());
+    </script>
+</body>
+</html>
